@@ -19,8 +19,9 @@ namespace Route.C41.G01.PL.Controllers
         // /Department/Index
         public IActionResult Index()
         {
-            //var departments = _departmentsRebo.GetAll();
-            return View();
+            var departments = _departmentsRebo.GetAll();
+
+            return View(departments);
         }
     }
 }

@@ -21,6 +21,4 @@ namespace Route.C41.G01.DAL.Data.Configurations
 
         }
     }
-    {
-    }
 }

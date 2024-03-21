@@ -11,10 +11,14 @@ namespace Route.C41.G01.DAL.Data
 {
     public class ApplicationDbContext: DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
         {
-            optionsBuilder.UseSqlServer("Server = .; Database = MVCApplicationG01; Trusted_Connection = True");
+            
         }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server = .; Database = MVCApplicationG01; Trusted_Connection = True");
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

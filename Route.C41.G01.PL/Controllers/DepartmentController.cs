@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
+using System;
 
 namespace Route.C41.G01.PL.Controllers
 {
@@ -10,10 +13,12 @@ namespace Route.C41.G01.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _departmentsRebo;
+        private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IDepartmentRepository departmentRepository, IWebHostEnvironment env)
         {
             _departmentsRebo = departmentRepository;
+            _env = env;
         }
 
         // /Department/Index
@@ -25,7 +30,7 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         // /Department/Create
-        [HttpGet]
+        //[HttpGet]
         public IActionResult Create()
         {
             return View();  
@@ -47,22 +52,77 @@ namespace Route.C41.G01.PL.Controllers
 
         // /Department/Details/10
         // /Department/Details
-        [HttpGet]
-        public IActionResult Details(int? id)
+        //[HttpGet]
+        public IActionResult Details(int? id, string viewName = "Details")
         {
             if(id is null)
             {
-                return BadRequest();
+                return BadRequest(); // 400
             }
 
             var department = _departmentsRebo.Get(id.Value);
 
             if(department is null)
             {
-                return NotFound();
+                return NotFound();  // 404
             }
 
-            return View(department);
+            return View(viewName,department);
+        }
+
+        // /Department/Edit/10
+        // /Department/Edit
+        //[HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            return Details(id, "Edit");
+            ///if (!id.HasValue)
+            ///{
+            ///    return BadRequest(); // 400
+            ///}
+            ///var department = _departmentsRebo.Get(id.Value);
+            ///if (department is null)
+            ///{
+            ///    return NotFound(); // 404
+            ///}
+            ///return View(department);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromRoute] int id, Department department)
+        {
+            if(id != department.Id)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(department);
+            }
+
+            try
+            {
+                _departmentsRebo.Update(department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception
+                // 2. Friendly Message
+
+                if (_env.IsDevelopment())
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Department");
+                }
+
+                return View(department);
+                
+            }
         }
     }
 }

@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Route.C41.G01.BLL.Interfaces;
+using Route.C41.G01.BLL.Repositories;
+using Route.C41.G01.DAL.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +18,29 @@ namespace Route.C41.G01.PL
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the DI container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            //services.AddScoped<ApplicationDbContext>();
+            ////services.AddTransient<ApplicationDbContext>();
+            ////services.AddSingleton<ApplicationDbContext>();
+
+            //services.AddScoped<DbContextOptions<ApplicationDbContext>>();
+
+            services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +61,7 @@ namespace Route.C41.G01.PL
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

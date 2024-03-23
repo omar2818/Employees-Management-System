@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.ViewModels;
 using System;
 
 namespace Route.C41.G01.PL.Controllers
@@ -123,6 +124,40 @@ namespace Route.C41.G01.PL.Controllers
 
                 return View(department);
                 
+            }
+        }
+
+        // /Department/Delete/10
+        // /Department/Delete
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            return Details(id, "Delete");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Department department)
+        {
+            try
+            {
+                _departmentsRebo.Delete(department);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // 1. Log Exception
+                // 2. Frindly Message
+
+                if (_env.IsDevelopment())
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Department");
+                }
+
+                return View(department);
             }
         }
     }

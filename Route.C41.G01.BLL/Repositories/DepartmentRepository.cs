@@ -10,47 +10,12 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G01.BLL.Repositories
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
     {
-        private readonly ApplicationDbContext _dbcontext;
         public DepartmentRepository(ApplicationDbContext applicationDb)
+            :base(applicationDb)
         {
-            _dbcontext = applicationDb;
+            
         }
-        public int Add(Department entity)
-        {
-            _dbcontext.Add(entity);
-            return _dbcontext.SaveChanges();
-        }
-        public int Update(Department entity)
-        {
-            _dbcontext.Update(entity);
-            return _dbcontext.SaveChanges();
-        }
-
-        public int Delete(Department entity)
-        {
-            _dbcontext.Remove(entity);
-            return _dbcontext.SaveChanges();
-        }
-
-        public Department Get(int id)
-        {
-            //return _dbcontext.Departments.Find(id);
-
-            return _dbcontext.Find< Department>(id);
-            ///var department = _dbcontext.Departments.Local.Where(D => D.Id == id).FirstOrDefault();
-            ///if(department == null)
-            ///{
-            ///    department = _dbcontext.Departments.Where(D => D.Id == id).FirstOrDefault();
-            ///}
-            ///return department;
-        }
-
-        public IEnumerable<Department> GetAll()
-        {
-            return _dbcontext.Departments.AsNoTracking().ToList();
-        }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Route.C41.G01.DAL.Data.Configurations;
 using Route.C41.G01.DAL.Models;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,15 @@ namespace Route.C41.G01.DAL.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.ApplyConfiguration<Department>(new DepartmentConfigurations());
+            //modelBuilder.ApplyConfiguration<Employee>(new EmployeeConfigurations());
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             
         }
 
         public DbSet<Department> Departments { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }

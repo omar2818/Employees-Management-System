@@ -33,7 +33,7 @@ namespace Route.C41.G01.DAL.Models
         [Range(22, 30)]
         public int? Age { get; set; }
 
-        [RegularExpression(@"^[0-9]{1,3}-[a-zA-Z]{5,10}-[a-zA-Z]{4,10}[a-zA-Z]{5,10}$",
+        [RegularExpression(@"^[0-9]{1,3}-[a-zA-Z]{5,10}-[a-zA-Z]{4,10}-[a-zA-Z]{5,10}$",
              ErrorMessage = "Address Must be like 123-Street-City-Country")]
         public string Address { get; set; }
 

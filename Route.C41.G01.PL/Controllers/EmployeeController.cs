@@ -2,77 +2,73 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
-using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
-using Route.C41.G01.PL.ViewModels;
 using System;
 
 namespace Route.C41.G01.PL.Controllers
 {
-    // Inheritance : DepartmentController is  a Controller
-    // Association : DepartmentController has a DepartmentRepository
-    public class DepartmentController : Controller
+    public class EmployeeController : Controller
     {
-        private readonly IDepartmentRepository _departmentsRebo;
+        private readonly IEmployeeRepository _employeesRebo;
         private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository departmentRepository, IWebHostEnvironment env)
+        public EmployeeController(IEmployeeRepository employeeRepository, IWebHostEnvironment env)
         {
-            _departmentsRebo = departmentRepository;
+            _employeesRebo = employeeRepository;
             _env = env;
         }
 
-        // /Department/Index
+        // /Employee/Index
         public IActionResult Index()
         {
-            var departments = _departmentsRebo.GetAll();
+            var Employees = _employeesRebo.GetAll();
 
-            return View(departments);
+            return View(Employees);
         }
 
-        // /Department/Create
+        // /Employee/Create
         //[HttpGet]
         public IActionResult Create()
         {
-            return View();  
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Department department)
+        public IActionResult Create(Employee employee)
         {
-            if(ModelState.IsValid) // server side validation
+            if (ModelState.IsValid) // server side validation
             {
-                var count = _departmentsRebo.Add(department);
-                if(count > 0)
+                var count = _employeesRebo.Add(employee);
+                if (count > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(department);
+            return View(employee);
         }
 
-        // /Department/Details/10
-        // /Department/Details
+        // /Employee/Details/10
+        // /Employee/Details
         //[HttpGet]
         public IActionResult Details(int? id, string viewName = "Details")
         {
-            if(id is null)
+            if (id is null)
             {
                 return BadRequest(); // 400
             }
 
-            var department = _departmentsRebo.Get(id.Value);
+            var employee = _employeesRebo.Get(id.Value);
 
-            if(department is null)
+            if (employee is null)
             {
                 return NotFound();  // 404
             }
 
-            return View(viewName,department);
+            return View(viewName, employee);
         }
 
-        // /Department/Edit/10
-        // /Department/Edit
+        // /Employee/Edit/10
+        // /Employee/Edit
         //[HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -81,31 +77,31 @@ namespace Route.C41.G01.PL.Controllers
             ///{
             ///    return BadRequest(); // 400
             ///}
-            ///var department = _departmentsRebo.Get(id.Value);
-            ///if (department is null)
+            ///var Employee = _EmployeesRebo.Get(id.Value);
+            ///if (Employee is null)
             ///{
             ///    return NotFound(); // 404
             ///}
-            ///return View(department);
+            ///return View(Employee);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, Employee employee)
         {
-            if(id != department.Id)
+            if (id != employee.Id)
             {
                 return BadRequest();
             }
 
             if (!ModelState.IsValid)
             {
-                return View(department);
+                return View(employee);
             }
 
             try
             {
-                _departmentsRebo.Update(department);
+                _employeesRebo.Update(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -119,16 +115,16 @@ namespace Route.C41.G01.PL.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Department");
+                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Employee");
                 }
 
-                return View(department);
-                
+                return View(employee);
+
             }
         }
 
-        // /Department/Delete/10
-        // /Department/Delete
+        // /Employee/Delete/10
+        // /Employee/Delete
         //[HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -136,11 +132,11 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Department department)
+        public IActionResult Delete(Employee employee)
         {
             try
             {
-                _departmentsRebo.Delete(department);
+                _employeesRebo.Delete(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -154,10 +150,10 @@ namespace Route.C41.G01.PL.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Department");
+                    ModelState.AddModelError(string.Empty, "An Error Has Occured During Updating the Employee");
                 }
 
-                return View(department);
+                return View(employee);
             }
         }
     }

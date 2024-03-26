@@ -21,6 +21,14 @@ namespace Route.C41.G01.PL.Controllers
         // /Employee/Index
         public IActionResult Index()
         {
+            // Binding Through View's Dictionary : Transfer Data from Action to View [One Way]
+
+            // 1. ViewData
+            ViewData["Message"] = "Hello Data";
+
+            // 2. ViewBag
+            ViewBag.Message = "Hello Bag";
+
             var Employees = _employeesRebo.GetAll();
 
             return View(Employees);

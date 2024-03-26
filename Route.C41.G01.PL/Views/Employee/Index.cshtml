@@ -1,7 +1,21 @@
 ﻿@model IEnumerable<Employee>
+
 @{
     ViewData["Title"] = "Index";
+
+    string viewDataMessage = ViewData["Message"] as string; // Enforce type Safety
+    
+    string viewBagMessage = ViewBag.Message; // Can't Enforce type Safety
+
 }
+
+@* <div class="alert alert-warning">
+    @ViewData["Message"]
+</div> 
+
+<div class="alert alert-success">
+    @ViewBag.Message
+</div> *@
 
 <h1>All Employees</h1>
 <br />

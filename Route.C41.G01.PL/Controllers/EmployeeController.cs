@@ -21,6 +21,8 @@ namespace Route.C41.G01.PL.Controllers
         // /Employee/Index
         public IActionResult Index()
         {
+            TempData.Keep();
+            //TempData.Save();
             // Binding Through View's Dictionary : Transfer Data from Action to View [One Way]
 
             // 1. ViewData
@@ -47,10 +49,18 @@ namespace Route.C41.G01.PL.Controllers
             if (ModelState.IsValid) // server side validation
             {
                 var count = _employeesRebo.Add(employee);
+
+                // 3. TempData
+
                 if (count > 0)
                 {
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee is Created Successfuly";
                 }
+                else
+                {
+                    TempData["Message"] = "An Error Has Occured, Employee Not Created";
+                }
+                return RedirectToAction(nameof(Index));
             }
             return View(employee);
         }

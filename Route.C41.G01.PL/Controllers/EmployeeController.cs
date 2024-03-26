@@ -9,13 +9,15 @@ namespace Route.C41.G01.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeesRebo;
+        private readonly IEmployeeRepository _employeesRepo;
+        //private readonly IDepartmentRepository _departmentRepo;
         private readonly IWebHostEnvironment _env;
 
-        public EmployeeController(IEmployeeRepository employeeRepository, IWebHostEnvironment env)
+        public EmployeeController(/*IDepartmentRepository departmentRepo,*/ IEmployeeRepository employeeRepository, IWebHostEnvironment env)
         {
-            _employeesRebo = employeeRepository;
+            _employeesRepo = employeeRepository;
             _env = env;
+            //_departmentRepo = departmentRepo;
         }
 
         // /Employee/Index
@@ -31,7 +33,7 @@ namespace Route.C41.G01.PL.Controllers
             // 2. ViewBag
             ViewBag.Message = "Hello Bag";
 
-            var Employees = _employeesRebo.GetAll();
+            var Employees = _employeesRepo.GetAll();
 
             return View(Employees);
         }
@@ -40,6 +42,8 @@ namespace Route.C41.G01.PL.Controllers
         //[HttpGet]
         public IActionResult Create()
         {
+            //ViewData["Departments"] = _departmentRepo.GetAll();
+
             return View();
         }
 
@@ -48,7 +52,7 @@ namespace Route.C41.G01.PL.Controllers
         {
             if (ModelState.IsValid) // server side validation
             {
-                var count = _employeesRebo.Add(employee);
+                var count = _employeesRepo.Add(employee);
 
                 // 3. TempData
 
@@ -75,7 +79,7 @@ namespace Route.C41.G01.PL.Controllers
                 return BadRequest(); // 400
             }
 
-            var employee = _employeesRebo.Get(id.Value);
+            var employee = _employeesRepo.Get(id.Value);
 
             if (employee is null)
             {
@@ -90,6 +94,8 @@ namespace Route.C41.G01.PL.Controllers
         //[HttpGet]
         public IActionResult Edit(int? id)
         {
+            //ViewData["Departments"] = _departmentRepo.GetAll();
+
             return Details(id, "Edit");
             ///if (!id.HasValue)
             ///{
@@ -119,7 +125,7 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
-                _employeesRebo.Update(employee);
+                _employeesRepo.Update(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -154,7 +160,7 @@ namespace Route.C41.G01.PL.Controllers
         {
             try
             {
-                _employeesRebo.Delete(employee);
+                _employeesRepo.Delete(employee);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

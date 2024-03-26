@@ -1,32 +1,32 @@
 ﻿@model Department
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit Department";
 }
 
-<h1>Create New Department</h1>
+<h1>Edit Department</h1>
 
-<br />
-<br />
+<form asp-action="Edit" method="post">
 
-<form asp-action="Create" >
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
     <div class="form-group">
         <label class="col-form-label" asp-for="Code">Code</label>
-        <input asp-for="Code" class="form-control"/>
+        <input asp-for="Code" class="form-control" />
         <span asp-validation-for="Code" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label class="col-form-label" asp-for="Name">Name</label>
-        <input asp-for="Name" class="form-control"/>
+        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label class="col-form-label" asp-for="DateOfCreation">Date of Creation</label>
-        <input asp-for="DateOfCreation" class="form-control"/>
+        <input asp-for="DateOfCreation" class="form-control" />
     </div>
 
-    <input type="submit" value="Create" class="btn btn-primary" /> |
-    <a asp-controller="Department" asp-action="Index" class="btn btn-light">Back To List</a>
+    <input type="submit" value="Save" class="btn btn-primary" /> |
+    <a asp-controller="Department" asp-action="Index" class="btn btn-light">Cancel</a>
 </form>
 
 @section ValidationScriptsSection {

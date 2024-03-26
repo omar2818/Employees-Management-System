@@ -10,12 +10,17 @@ using System.Threading.Tasks;
 
 namespace Route.C41.G01.BLL.Repositories
 {
-    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
-        public DepartmentRepository(ApplicationDbContext applicationDb)
+        public EmployeeRepository(ApplicationDbContext applicationDb)
             :base(applicationDb)
         {
             
+        }
+
+        public IQueryable<Employee> GetEmployeesByAddress(string address)
+        {
+            return _dbcontext.Employees.Where(E => address.Equals(E.Address, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

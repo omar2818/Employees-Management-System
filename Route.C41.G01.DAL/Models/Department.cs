@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 namespace Route.C41.G01.DAL.Models
 {
     // Model
-    public class Department
+    public class Department : ModelBase
     {
-        public int Id { get; set; }
 
         [Required(ErrorMessage = "Code is Required Ya Hamada")]
         public string Code { get; set; }

@@ -23,7 +23,7 @@ namespace Route.C41.G01.DAL.Models
 
         //[InverseProperty(nameof(Employee.Department))]
         // Navigational Property [Many]
-        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
 
     }
 }

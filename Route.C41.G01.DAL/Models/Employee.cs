@@ -68,7 +68,7 @@ namespace Route.C41.G01.DAL.Models
         
         //[InverseProperty(nameof(Models.Department.Employees))]
         // Navigational Property [One]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
 
     }
 }

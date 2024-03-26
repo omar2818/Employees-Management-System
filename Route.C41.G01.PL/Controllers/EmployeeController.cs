@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.DAL.Models;
 using System;
+using System.Linq;
 
 namespace Route.C41.G01.PL.Controllers
 {
@@ -21,19 +22,23 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         // /Employee/Index
-        public IActionResult Index()
+        public IActionResult Index(string searching)
         {
-            TempData.Keep();
-            //TempData.Save();
-            // Binding Through View's Dictionary : Transfer Data from Action to View [One Way]
+            ///TempData.Keep();
+            ///TempData.Save();
+            /// Binding Through View's Dictionary : Transfer Data from Action to View [One Way]
+            /// 1. ViewData
+            ///ViewData["Message"] = "Hello Data";
+            /// 2. ViewBag
+            ///ViewBag.Message = "Hello Bag";
 
-            // 1. ViewData
-            ViewData["Message"] = "Hello Data";
-
-            // 2. ViewBag
-            ViewBag.Message = "Hello Bag";
-
-            var Employees = _employeesRepo.GetAll();
+            var Employees = Enumerable.Empty<Employee>();
+            if (string.IsNullOrEmpty(searching)) {
+                Employees = _employeesRepo.GetAll();
+            }else
+            {
+                Employees = _employeesRepo.GetEmployeesByName(searching);
+            }
 
             return View(Employees);
         }

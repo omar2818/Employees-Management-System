@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Data;
+using Route.C41.G01.PL.Hepers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,9 @@ namespace Route.C41.G01.PL
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,9 +1,12 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 
 @inject ApplicationDbContext _AppDpContext
+@inject IMapper _mapper
 
 @{
-    _AppDpContext.Entry(Model).Reference(E => E.Department);
+
+    Employee employee = _mapper.Map<Employee>(Model);
+    _AppDpContext.Entry(employee).Reference(E => E.Department);
 }
 
 <div class="form-group">

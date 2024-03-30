@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
+using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.ViewModels;
 using System;
@@ -44,11 +45,12 @@ namespace Route.C41.G01.PL.Controllers
             ///ViewBag.Message = "Hello Bag";
 
             var Employees = Enumerable.Empty<Employee>();
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
             if (string.IsNullOrEmpty(searching)) {
-                Employees = _unitOfWork.EmployeeRepository.GetAll();
+                Employees = _unitOfWork.Repository<Employee>().GetAll();
             }else
             {
-                Employees = _unitOfWork.EmployeeRepository.GetEmployeesByName(searching);
+                Employees = employeeRepo.GetEmployeesByName(searching);
             }
 
             var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(Employees);
@@ -77,7 +79,7 @@ namespace Route.C41.G01.PL.Controllers
 
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeevm);
 
-                _unitOfWork.EmployeeRepository.Add(mappedEmp);
+                _unitOfWork.Repository<Employee>().Add(mappedEmp);
 
                 var count = _unitOfWork.Complete();
 
@@ -106,7 +108,7 @@ namespace Route.C41.G01.PL.Controllers
                 return BadRequest(); // 400
             }
 
-            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
+            var employee = _unitOfWork.Repository<Employee>().Get(id.Value);
 
             if (employee is null)
             {
@@ -156,7 +158,7 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-                _unitOfWork.EmployeeRepository.Update(mappedEmp);
+                _unitOfWork.Repository<Employee>().Update(mappedEmp);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
@@ -195,7 +197,7 @@ namespace Route.C41.G01.PL.Controllers
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 
-                _unitOfWork.EmployeeRepository.Delete(mappedEmp);
+                _unitOfWork.Repository<Employee>().Delete(mappedEmp);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }

@@ -41,11 +41,9 @@ namespace Route.C41.G01.PL
                 optionsBuilder.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
             services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+
+            services.AddApplicationServices();
 
         }
 

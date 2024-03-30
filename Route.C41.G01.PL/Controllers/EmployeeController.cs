@@ -13,18 +13,21 @@ namespace Route.C41.G01.PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _employeesRepo;
-        //private readonly IDepartmentRepository _departmentRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
+        //private readonly IEmployeeRepository _employeesRepo;
+        //private readonly IDepartmentRepository _departmentRepo;
 
         public EmployeeController(IMapper mapper,
-            IEmployeeRepository employeeRepository, 
+            IUnitOfWork unitOfWork,
             IWebHostEnvironment env
+            //IEmployeeRepository employeeRepository, 
             /*IDepartmentRepository departmentRepo,*/ )
         {
             _mapper = mapper;
-            _employeesRepo = employeeRepository;
+            _unitOfWork = unitOfWork;
+            //_employeesRepo = employeeRepository;
             _env = env;
             //_departmentRepo = departmentRepo;
         }
@@ -42,10 +45,10 @@ namespace Route.C41.G01.PL.Controllers
 
             var Employees = Enumerable.Empty<Employee>();
             if (string.IsNullOrEmpty(searching)) {
-                Employees = _employeesRepo.GetAll();
+                Employees = _unitOfWork.EmployeeRepository.GetAll();
             }else
             {
-                Employees = _employeesRepo.GetEmployeesByName(searching);
+                Employees = _unitOfWork.EmployeeRepository.GetEmployeesByName(searching);
             }
 
             var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(Employees);
@@ -74,7 +77,9 @@ namespace Route.C41.G01.PL.Controllers
 
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeevm);
 
-                var count = _employeesRepo.Add(mappedEmp);
+                _unitOfWork.EmployeeRepository.Add(mappedEmp);
+
+                var count = _unitOfWork.Complete();
 
                 // 3. TempData
 
@@ -101,7 +106,7 @@ namespace Route.C41.G01.PL.Controllers
                 return BadRequest(); // 400
             }
 
-            var employee = _employeesRepo.Get(id.Value);
+            var employee = _unitOfWork.EmployeeRepository.Get(id.Value);
 
             if (employee is null)
             {
@@ -151,7 +156,8 @@ namespace Route.C41.G01.PL.Controllers
             {
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-                _employeesRepo.Update(mappedEmp);
+                _unitOfWork.EmployeeRepository.Update(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -189,7 +195,8 @@ namespace Route.C41.G01.PL.Controllers
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 
-                _employeesRepo.Delete(mappedEmp);
+                _unitOfWork.EmployeeRepository.Delete(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

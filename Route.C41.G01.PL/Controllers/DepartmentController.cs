@@ -13,19 +13,24 @@ namespace Route.C41.G01.PL.Controllers
     // Association : DepartmentController has a DepartmentRepository
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentsRebo;
+        //private readonly IDepartmentRepository _departmentsRebo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
 
-        public DepartmentController(IDepartmentRepository departmentRepository, IWebHostEnvironment env)
+        public DepartmentController(
+            //IDepartmentRepository departmentRepository,
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment env)
         {
-            _departmentsRebo = departmentRepository;
+            //_departmentsRebo = departmentRepository;
+            _unitOfWork = unitOfWork;
             _env = env;
         }
 
         // /Department/Index
         public IActionResult Index()
         {
-            var departments = _departmentsRebo.GetAll();
+            var departments = _unitOfWork.Repository<Department>().GetAll();
 
             return View(departments);
         }
@@ -42,7 +47,8 @@ namespace Route.C41.G01.PL.Controllers
         {
             if(ModelState.IsValid) // server side validation
             {
-                var count = _departmentsRebo.Add(department);
+                _unitOfWork.Repository<Department>().Add(department);
+                var count = _unitOfWork.Complete();
                 if(count > 0)
                 {
                     return RedirectToAction(nameof(Index));
@@ -61,7 +67,7 @@ namespace Route.C41.G01.PL.Controllers
                 return BadRequest(); // 400
             }
 
-            var department = _departmentsRebo.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
 
             if(department is null)
             {
@@ -105,7 +111,8 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
-                _departmentsRebo.Update(department);
+                _unitOfWork.Repository<Department>().Update(department);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -140,7 +147,8 @@ namespace Route.C41.G01.PL.Controllers
         {
             try
             {
-                _departmentsRebo.Delete(department);
+                _unitOfWork.Repository<Department>().Delete(department);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

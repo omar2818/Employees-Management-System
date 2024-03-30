@@ -17,21 +17,21 @@ namespace Route.C41.G01.BLL.Repositories
         {
             _dbcontext = applicationDb;
         }
-        public int Add(T entity)
+        public void Add(T entity)
         {
             _dbcontext.Set<T>().Add(entity);
-            return _dbcontext.SaveChanges();
+            //return _dbcontext.SaveChanges();
         }
-        public int Update(T entity)
+        public void Update(T entity)
         {
             _dbcontext.Set<T>().Update(entity);
-            return _dbcontext.SaveChanges();
+            //return _dbcontext.SaveChanges();
         }
 
-        public int Delete(T entity)
+        public void Delete(T entity)
         {
             _dbcontext.Set<T>().Remove(entity);
-            return _dbcontext.SaveChanges();
+            //return _dbcontext.SaveChanges();
         }
 
         public T Get(int id)
@@ -49,6 +49,10 @@ namespace Route.C41.G01.BLL.Repositories
 
         public IEnumerable<T> GetAll()
         {
+            if(typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>) _dbcontext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+            }
             return _dbcontext.Set<T>().AsNoTracking().ToList();
         }
     }

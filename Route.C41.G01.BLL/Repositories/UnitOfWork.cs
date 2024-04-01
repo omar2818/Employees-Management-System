@@ -39,6 +39,11 @@ namespace Route.C41.G01.BLL.Repositories
                     var repository = new EmployeeRepository(_dbContext);
                     _repositories.Add(key, repository);
                 }
+                else if (key == nameof(Department))
+                {
+                    var repository = new DepartmentRepository(_dbContext);
+                    _repositories.Add(key, repository);
+                }
                 else
                 {
                     var repository =new GenericRepository<T>(_dbContext);

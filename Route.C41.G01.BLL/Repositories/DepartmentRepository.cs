@@ -17,5 +17,10 @@ namespace Route.C41.G01.BLL.Repositories
         {
             
         }
+
+        public IEnumerable<Department> GetDepartmentsByName(string Name)
+        {
+            return _dbcontext.Departments.ToList<Department>().Where(D => Name.Equals(D.Name, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

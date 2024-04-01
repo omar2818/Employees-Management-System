@@ -6,6 +6,7 @@ using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.ViewModels;
 using System;
+using System.Linq;
 
 namespace Route.C41.G01.PL.Controllers
 {
@@ -28,12 +29,33 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         // /Department/Index
-        public IActionResult Index()
+        public IActionResult Index(string searching)
         {
-            var departments = _unitOfWork.Repository<Department>().GetAll();
+            //var departments = _unitOfWork.Repository<Department>().GetAll();
+            var departments = Enumerable.Empty<Department>();
+            var DepartmentRepo = _unitOfWork.Repository<Department>() as DepartmentRepository;
+            if (string.IsNullOrEmpty(searching))
+            {
+                departments = DepartmentRepo.GetAll();
+            }
+            else
+            {
+                departments = DepartmentRepo.GetDepartmentsByName(searching);
+            }
 
             return View(departments);
         }
+        /*var Employees = Enumerable.Empty<Employee>();
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
+            if (string.IsNullOrEmpty(searching)) {
+                Employees = _unitOfWork.Repository<Employee>().GetAll();
+            }else
+            {
+                Employees = employeeRepo.GetEmployeesByName(searching);
+            }
+
+            var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(Employees);
+            return View(mappedEmps);*/
 
         // /Department/Create
         //[HttpGet]

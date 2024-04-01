@@ -47,7 +47,7 @@ namespace Route.C41.G01.PL.Controllers
             var Employees = Enumerable.Empty<Employee>();
             var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
             if (string.IsNullOrEmpty(searching)) {
-                Employees = _unitOfWork.Repository<Employee>().GetAll();
+                Employees = employeeRepo.GetAll();
             }else
             {
                 Employees = employeeRepo.GetEmployeesByName(searching);

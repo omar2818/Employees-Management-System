@@ -9,6 +9,10 @@
     _AppDpContext.Entry(employee).Reference(E => E.Department);
 }
 
+<div>
+    <img src="~/Files/Images/@Model.ImageName" width="75" class="img-fluid rounded-circle" alt="Employee Image" />
+</div>
+
 <div class="form-group">
     <label class="col-form-label" asp-for="Name">Name</label>
     <input asp-for="Name" class="form-control" readonly />

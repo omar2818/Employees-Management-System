@@ -53,7 +53,7 @@ namespace Route.C41.G01.PL.Controllers
                 Employees = employeeRepo.GetEmployeesByName(searching);
             }
 
-            var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(Employees);
+            var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeResponseViewModel>>(Employees);
             return View(mappedEmps);
         }
 
@@ -115,7 +115,14 @@ namespace Route.C41.G01.PL.Controllers
                 return NotFound();  // 404
             }
 
-            var mapperEmp = _mapper.Map<Employee, EmployeeViewModel>(employee);
+            if(viewName == "Edit")
+            {
+                var mapperEmp1 = _mapper.Map<Employee, EmployeeViewModel>(employee);
+
+                return View(viewName, mapperEmp1);
+            }
+
+            var mapperEmp = _mapper.Map<Employee, EmployeeResponseViewModel>(employee);
             
             return View(viewName, mapperEmp);
         }
@@ -144,10 +151,10 @@ namespace Route.C41.G01.PL.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
-            if (id != employeeVM.Id)
-            {
-                return BadRequest();
-            }
+            //if (id != employeeVM.Id)
+            //{
+            //    return BadRequest();
+            //}
 
             if (!ModelState.IsValid)
             {
@@ -190,11 +197,11 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(EmployeeViewModel employeeVM)
+        public IActionResult Delete(EmployeeResponseViewModel employeeVM)
         {
             try
             {
-                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+                var mappedEmp = _mapper.Map<EmployeeResponseViewModel, Employee>(employeeVM);
 
 
                 _unitOfWork.Repository<Employee>().Delete(mappedEmp);

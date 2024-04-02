@@ -9,6 +9,8 @@ namespace Route.C41.G01.PL.Hepers
         public MappingProfiles()
         {
             CreateMap<EmployeeViewModel, Employee>().ReverseMap();
+            
+            CreateMap<EmployeeResponseViewModel, Employee>().ReverseMap();
 
             //CreateMap<Employee, EmployeeViewModel>();
         }

@@ -6,7 +6,11 @@
 
 <h1>Edit Employee</h1>
 
-<form asp-action="Edit" method="post">
+<div>
+    <img src="~/Files/Images/@Model.ImageName" width="75" class="img-fluid rounded-circle" alt="Employee Image" />
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
 
     <div asp-validation-summary="All" class="text-danger"></div>
 

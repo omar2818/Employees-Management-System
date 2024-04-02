@@ -120,7 +120,7 @@ namespace Route.C41.G01.PL.Controllers
             if(viewName == "Edit")
             {
                 var mapperEmp1 = _mapper.Map<Employee, EmployeeViewModel>(employee);
-
+                TempData["ImageName"] = employee.ImageName;
                 return View(viewName, mapperEmp1);
             }
 
@@ -170,11 +170,21 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
+                employeeVM.ImageName = DocumentSettings.UploadFile(employeeVM.Image, "Images");
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
                 _unitOfWork.Repository<Employee>().Update(mappedEmp);
-                _unitOfWork.Complete();
-                return RedirectToAction(nameof(Index));
+                var count = _unitOfWork.Complete();
+                if (count > 0)
+                {
+                    DocumentSettings.DeleteFile(TempData["ImageName"] as string, "Images");
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    DocumentSettings.DeleteFile(employeeVM.ImageName, "Images");
+                }
+                return View(employeeVM);
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,7 @@ namespace Route.C41.G01.PL.Controllers
 
                 // Automatic Mappings
 
+                employeevm.ImageName = DocumentSettings.UploadFile(employeevm.Image, "Images");
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeevm);
 
                 _unitOfWork.Repository<Employee>().Add(mappedEmp);

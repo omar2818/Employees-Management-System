@@ -1,6 +1,7 @@
 ﻿using Route.C41.G01.DAL.Models;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Route.C41.G01.PL.ViewModels
 {
@@ -48,5 +49,7 @@ namespace Route.C41.G01.PL.ViewModels
         //[InverseProperty(nameof(Models.Department.Employees))]
         // Navigational Property [One]
         public virtual Department Department { get; set; }
+
+        public IFormFile Image { get; set; }
     }
 }

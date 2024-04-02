@@ -18,9 +18,11 @@ namespace Route.C41.G01.BLL.Repositories
             
         }
 
-        public IEnumerable<Department> GetDepartmentsByName(string Name)
+        public async Task<IEnumerable<Department>> GetDepartmentsByNameAsync(string Name)
         {
-            return _dbcontext.Departments.ToList<Department>().Where(D => Name.Equals(D.Name, StringComparison.OrdinalIgnoreCase));
+            return await _dbcontext.Departments.Where(D => D.Name.Contains(Name)).ToListAsync();
+
+            //return _dbcontext.Departments.ToList<Department>().Where(D => Name.Equals(D.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

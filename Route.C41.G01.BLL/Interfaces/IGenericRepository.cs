@@ -9,9 +9,9 @@ namespace Route.C41.G01.BLL.Interfaces
 {
     public interface IGenericRepository<T>  where T : class
     {
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
 
-        T Get(int id);
+        Task<T> GetAsync(int id);
 
         void Add(T entity);
 

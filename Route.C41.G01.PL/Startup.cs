@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Route.C41.G01.BLL.Interfaces;
 using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Data;
+using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.Hepers;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,26 @@ namespace Route.C41.G01.PL
             services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
 
             services.AddApplicationServices();
+
+            services.AddIdentity<ApplicationUser, IdentityRole>( options =>
+            {
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 5;
+                
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
+
+                //options.User.AllowedUserNameCharacters = "asdfgh987456321";
+                options.User.RequireUniqueEmail = true;
+
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //services.AddAuthentication();
 
         }
 

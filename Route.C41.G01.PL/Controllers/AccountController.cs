@@ -68,12 +68,66 @@ namespace Route.C41.G01.PL.Controllers
 
         #region Sign In
 
-        public IActionResult SignIn()
+        public async Task<IActionResult> SignIn(SignInViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+                    var password = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if (password)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+
+                        if(result.IsLockedOut)
+                        {
+                            ModelState.AddModelError(string.Empty, "Your Account is Locked!!");
+                        }
+
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                        }
+
+						if (result.IsNotAllowed)
+						{
+							ModelState.AddModelError(string.Empty, "Your Account is Not Confirmed Yet!!");
+						}
+
+					}
+                }
+				ModelState.AddModelError(string.Empty, "Invalid Login");
+			}
+			return View();
+        }
+
+        #endregion
+
+        public async new Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(SignIn));
+        }
+
+        public IActionResult ForgetPassword()
         {
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordEmail(ForgetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
-        #endregion
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
+                }
+            }
+            return View(model);
+        }
     }
 }

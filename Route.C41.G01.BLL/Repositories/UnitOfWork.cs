@@ -54,14 +54,14 @@ namespace Route.C41.G01.BLL.Repositories
             return _repositories[key] as IGenericRepository<T>;
         }
         
-        public int Complete()
+        public async Task<int> Complete()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _dbContext.Dispose();
+            await _dbContext.DisposeAsync();
         }
 
     }

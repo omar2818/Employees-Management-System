@@ -54,6 +54,8 @@ namespace Route.C41.G01.DAL.Models
 
         public bool IsDeleted { get; set; } = false;
 
+        public string ImageName { get; set; }
+
         //[ForeignKey("Department")]
         // Foreign Key Column
         public int? DepartmentId { get; set; }

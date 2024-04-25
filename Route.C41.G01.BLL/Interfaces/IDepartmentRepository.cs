@@ -9,6 +9,6 @@ namespace Route.C41.G01.BLL.Interfaces
 {
     public interface IDepartmentRepository : IGenericRepository<Department>
     {
-        IEnumerable<Department> GetDepartmentsByName(string name);
+        Task<IEnumerable<Department>> GetDepartmentsByNameAsync(string name);
     }
 }

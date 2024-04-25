@@ -1,4 +1,4 @@
-﻿@model EmployeeViewModel
+﻿@model EmployeeResponseViewModel
 
 @inject ApplicationDbContext _AppDpContext
 @inject IMapper _mapper
@@ -8,6 +8,10 @@
     Employee employee = _mapper.Map<Employee>(Model);
     _AppDpContext.Entry(employee).Reference(E => E.Department);
 }
+
+<div>
+    <img src="~/Files/Images/@Model.ImageName" width="75" class="img-fluid rounded-circle" alt="Employee Image" />
+</div>
 
 <div class="form-group">
     <label class="col-form-label" asp-for="Name">Name</label>

@@ -5,6 +5,7 @@ using Route.C41.G01.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,14 +19,14 @@ namespace Route.C41.G01.BLL.Repositories
             
         }
 
-        public IEnumerable<Employee> GetEmployeesByAddress(string address)
+        public async Task<IEnumerable<Employee>> GetEmployeesByAddressAsync(string address)
         {
-            return _dbcontext.Employees.ToList<Employee>().Where(E => address.Equals(E.Address, StringComparison.OrdinalIgnoreCase));
+            return await _dbcontext.Employees.Where(E => E.Address.Contains(address)).Include(E => E.Department).AsNoTracking().ToListAsync();
         }
 
-        public IEnumerable<Employee> GetEmployeesByName(string Name)
+        public async Task<IEnumerable<Employee>> GetEmployeesByNameAsync(string Name)
         {
-            return _dbcontext.Employees.ToList<Employee>().Where(E => Name.Equals(E.Name, StringComparison.OrdinalIgnoreCase));
+            return await _dbcontext.Employees.Where(E => E.Name.Contains(Name)).Include(E => E.Department).AsNoTracking().ToListAsync();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model EmployeeViewModel
+﻿@model EmployeeResponseViewModel
 
 @{
     ViewData["Title"] = "Delete Employee";
@@ -7,6 +7,8 @@
 <h1>Are You Sure To Delete This Employee</h1>
 
 <form asp-action="Delete">
+
+    @* <input type="hidden" asp-for="ImageName"/> *@
 
     <partial name="PartialViews/DetailsDeleteEmployeePartial" />
 

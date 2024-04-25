@@ -9,7 +9,7 @@ namespace Route.C41.G01.BLL.Interfaces
 {
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
-        IEnumerable<Employee> GetEmployeesByAddress(string address);
-        IEnumerable<Employee> GetEmployeesByName(string Name);
+        Task<IEnumerable<Employee>> GetEmployeesByAddressAsync(string address);
+        Task<IEnumerable<Employee>> GetEmployeesByNameAsync(string Name);
     }
 }

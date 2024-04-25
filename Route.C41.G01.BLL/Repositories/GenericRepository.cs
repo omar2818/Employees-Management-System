@@ -34,11 +34,11 @@ namespace Route.C41.G01.BLL.Repositories
             //return _dbcontext.SaveChanges();
         }
 
-        public T Get(int id)
+        public async Task<T> GetAsync(int id)
         {
             //return _dbcontext.Employees.Find(id);
 
-            return _dbcontext.Find<T>(id);
+            return await _dbcontext.FindAsync<T>(id);
             ///var Employee = _dbcontext.Employees.Local.Where(D => D.Id == id).FirstOrDefault();
             ///if(Employee == null)
             ///{
@@ -47,13 +47,13 @@ namespace Route.C41.G01.BLL.Repositories
             ///return Employee;
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             if(typeof(T) == typeof(Employee))
             {
-                return (IEnumerable<T>) _dbcontext.Employees.Include(E => E.Department).AsNoTracking().ToList();
+                return (IEnumerable<T>) await _dbcontext.Employees.Include(E => E.Department).AsNoTracking().ToListAsync();
             }
-            return _dbcontext.Set<T>().AsNoTracking().ToList();
+            return await _dbcontext.Set<T>().AsNoTracking().ToListAsync();
         }
     }
 }

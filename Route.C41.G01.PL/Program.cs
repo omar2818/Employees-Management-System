@@ -9,6 +9,7 @@ using Route.C41.G01.DAL.Data;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.Services.EmailSender;
+using Route.C41.G01.PL.Services.Settings;
 using System;
 
 namespace Route.C41.G01.PL
@@ -70,8 +71,8 @@ namespace Route.C41.G01.PL
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.AccessDeniedPath = "/Home/Error";
             });
-            webApplicationBuilder.Services.AddTransient<Services.EmailSender.IEmailSender, EmailSender>();
-
+            webApplicationBuilder.Services.AddTransient<IEmailSender, EmailSender>();
+            webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
             #endregion
 
             var app = webApplicationBuilder.Build();

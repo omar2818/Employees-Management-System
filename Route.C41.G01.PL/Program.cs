@@ -72,7 +72,11 @@ namespace Route.C41.G01.PL
                 options.AccessDeniedPath = "/Home/Error";
             });
             webApplicationBuilder.Services.AddTransient<IEmailSender, EmailSender>();
+            
             webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
+            
+            webApplicationBuilder.Services.AddTransient<ImailSettings, EMailSettings>();
+            
             #endregion
 
             var app = webApplicationBuilder.Build();

@@ -17,18 +17,21 @@ namespace Route.C41.G01.PL.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ImailSettings _mailSettings;
+        private readonly ISMSService _smsService;
 
         public AccountController(IEmailSender emailSender
             , IConfiguration configuration
             , UserManager<ApplicationUser> userManager
             , SignInManager<ApplicationUser> signInManager
-            , ImailSettings mailSettings)
+            , ImailSettings mailSettings
+            ,ISMSService smsService)
         {
             _emailSender = emailSender;
             _configuration = configuration;
 			_userManager = userManager;
 			_signInManager = signInManager;
             _mailSettings = mailSettings;
+            _smsService = smsService;
         }
 
         #region Sign Up
@@ -168,6 +171,41 @@ namespace Route.C41.G01.PL.Controllers
             }
             return View(nameof(ForgetPassword), model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SendSMS(ForgetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user is not null)
+                {
+                    var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
+
+                    //await _emailSender.SendAsync(
+                    //    from: _configuration["EmailSettings:SenderEmail"],
+                    //    recipients: model.Email,
+                    //    subject: "reset your password",
+                    //    body: PasswordURL
+                    //    );
+
+                    var sms = new SMSMessage()
+                    {
+                        PhoneNumber = user.PhoneNumber,
+                        Body = PasswordURL
+                    };
+
+                    _smsService.SendSMS(sms);
+
+                    return Ok("Check Your Phone");
+                }
+                ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
+            }
+            return View(nameof(ForgetPassword), model);
+        }
+
 
         public IActionResult CheckYourInbox()
         {

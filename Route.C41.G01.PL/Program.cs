@@ -74,9 +74,11 @@ namespace Route.C41.G01.PL
             webApplicationBuilder.Services.AddTransient<IEmailSender, EmailSender>();
             
             webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
-            
             webApplicationBuilder.Services.AddTransient<ImailSettings, EMailSettings>();
             
+            webApplicationBuilder.Services.Configure<TwilioSettings>(webApplicationBuilder.Configuration.GetSection("Twilio"));
+            webApplicationBuilder.Services.AddTransient<ISMSService, SMSService>();
+
             #endregion
 
             var app = webApplicationBuilder.Build();

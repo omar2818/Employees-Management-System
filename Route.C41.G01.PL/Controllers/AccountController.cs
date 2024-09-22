@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +8,7 @@ using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.Services.EmailSender;
 using Route.C41.G01.PL.ViewModels.User;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Route.C41.G01.PL.Controllers
@@ -124,23 +127,56 @@ namespace Route.C41.G01.PL.Controllers
 			return View(model);
         }
 
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var Result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            var Claims = Result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                }
+                );
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
         #endregion
 
+        #region Sign out
         public async new Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(SignIn));
         }
+        #endregion
 
+        #region Forget Password
         public IActionResult ForgetPassword()
         {
             return View();
         }
+        #endregion
 
+        #region Reset Password
         [HttpPost]
         public async Task<IActionResult> SendResetPasswordEmail(ForgetPasswordViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
 
@@ -234,6 +270,7 @@ namespace Route.C41.G01.PL.Controllers
                 ModelState.AddModelError(string.Empty, "Url is not valid");
             }
             return View(model);
-        }
+        } 
+        #endregion
     }
 }

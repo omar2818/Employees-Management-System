@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -78,6 +79,17 @@ namespace Route.C41.G01.PL
             
             webApplicationBuilder.Services.Configure<TwilioSettings>(webApplicationBuilder.Configuration.GetSection("Twilio"));
             webApplicationBuilder.Services.AddTransient<ISMSService, SMSService>();
+
+            webApplicationBuilder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(options =>
+            {
+                IConfiguration GoogleAuthSection = webApplicationBuilder.Configuration.GetSection("Authentication:Google");
+                options.ClientId = GoogleAuthSection["ClientId"];
+                options.ClientSecret = GoogleAuthSection["ClientSecret"];
+            });
 
             #endregion
 

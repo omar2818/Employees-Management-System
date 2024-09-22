@@ -12,6 +12,8 @@ namespace Route.C41.G01.PL.Hepers
             
             CreateMap<EmployeeResponseViewModel, Employee>().ReverseMap();
 
+            CreateMap<DepartmentViewModel, Department>().ReverseMap();
+
             //CreateMap<Employee, EmployeeViewModel>();
         }
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Route.C41.G01.BLL.Interfaces;
@@ -6,6 +8,7 @@ using Route.C41.G01.BLL.Repositories;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,20 +16,24 @@ namespace Route.C41.G01.PL.Controllers
 {
     // Inheritance : DepartmentController is  a Controller
     // Association : DepartmentController has a DepartmentRepository
+    [Authorize]
     public class DepartmentController : Controller
     {
         //private readonly IDepartmentRepository _departmentsRebo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
+        private readonly IMapper _mapper;
 
         public DepartmentController(
             //IDepartmentRepository departmentRepository,
             IUnitOfWork unitOfWork,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IMapper mapper)
         {
             //_departmentsRebo = departmentRepository;
             _unitOfWork = unitOfWork;
             _env = env;
+            _mapper = mapper;
         }
 
         // /Department/Index
@@ -44,7 +51,8 @@ namespace Route.C41.G01.PL.Controllers
                 departments = await DepartmentRepo.GetDepartmentsByNameAsync(searching);
             }
 
-            return View(departments);
+            var mappedDepartments = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
+            return View(mappedDepartments);
         }
         /*var Employees = Enumerable.Empty<Employee>();
             var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
@@ -66,11 +74,12 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Department department)
+        public async Task<IActionResult> Create(DepartmentViewModel department)
         {
-            if(ModelState.IsValid) // server side validation
+            var mappedDep = _mapper.Map<DepartmentViewModel, Department>(department);
+            if (ModelState.IsValid) // server side validation
             {
-                _unitOfWork.Repository<Department>().Add(department);
+                _unitOfWork.Repository<Department>().Add(mappedDep);
                 var count = await _unitOfWork.Complete();
                 if(count > 0)
                 {
@@ -96,8 +105,8 @@ namespace Route.C41.G01.PL.Controllers
             {
                 return NotFound();  // 404
             }
-
-            return View(viewName,department);
+            var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
+            return View(viewName,mappedDep);
         }
 
         // /Department/Edit/10
@@ -120,9 +129,10 @@ namespace Route.C41.G01.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromRoute] int id, Department department)
+        public async Task<IActionResult> Edit([FromRoute] int id, DepartmentViewModel department)
         {
-            if(id != department.Id)
+            var mappedDep = _mapper.Map<DepartmentViewModel, Department>(department);
+            if (id != mappedDep.Id)
             {
                 return BadRequest();
             }
@@ -134,7 +144,7 @@ namespace Route.C41.G01.PL.Controllers
 
             try
             {
-                _unitOfWork.Repository<Department>().Update(department);
+                _unitOfWork.Repository<Department>().Update(mappedDep);
                 await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
@@ -166,11 +176,12 @@ namespace Route.C41.G01.PL.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Department department)
+        public async Task<IActionResult> Delete(DepartmentViewModel department)
         {
             try
             {
-                _unitOfWork.Repository<Department>().Delete(department);
+                var mappedDep = _mapper.Map<DepartmentViewModel, Department>(department);
+                _unitOfWork.Repository<Department>().Delete(mappedDep);
                 await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }

@@ -137,7 +137,7 @@ namespace Route.C41.G01.PL.Controllers
                 if (user is not null)
                 {
                     var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, "localhost:5001");
+                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
                     await _emailSender.SendAsync(
                         from: _configuration["EmailSettings:SenderEmail"],
                         recipients: model.Email,
@@ -148,7 +148,7 @@ namespace Route.C41.G01.PL.Controllers
                 }
                 ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
             }
-            return View(model);
+            return View(nameof(ForgetPassword), model);
         }
 
         public IActionResult CheckYourInbox()

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.Services.EmailSender;
 using Route.C41.G01.PL.ViewModels.User;
 using System.Threading.Tasks;
@@ -15,14 +16,20 @@ namespace Route.C41.G01.PL.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMailSettings _mailSettings;
 
-		public AccountController(IEmailSender emailSender, IConfiguration configuration, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(IEmailSender emailSender
+            , IConfiguration configuration
+            , UserManager<ApplicationUser> userManager
+            , SignInManager<ApplicationUser> signInManager
+            , IMailSettings mailSettings)
         {
             _emailSender = emailSender;
             _configuration = configuration;
 			_userManager = userManager;
 			_signInManager = signInManager;
-		}
+            _mailSettings = mailSettings;
+        }
 
         #region Sign Up
 
@@ -138,12 +145,22 @@ namespace Route.C41.G01.PL.Controllers
                 {
                     var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
-                    await _emailSender.SendAsync(
-                        from: _configuration["EmailSettings:SenderEmail"],
-                        recipients: model.Email,
-                        subject: "reset your password",
-                        body: PasswordURL
-                        );
+                    //await _emailSender.SendAsync(
+                    //    from: _configuration["EmailSettings:SenderEmail"],
+                    //    recipients: model.Email,
+                    //    subject: "reset your password",
+                    //    body: PasswordURL
+                    //    );
+
+                    var email = new Email()
+                    {
+                        To = model.Email,
+                        Subject = "Reset Your Password",
+                        Body = PasswordURL
+                    };
+
+                    _mailSettings.SendEmail(email);
+
                     return Redirect(nameof(CheckYourInbox));
                 }
                 ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");

@@ -61,6 +61,32 @@ namespace Route.C41.G01.PL.Controllers
             return View(mappedEmps);
         }
 
+        public async Task<IActionResult> Search(string searchInput)
+        {
+            ///TempData.Keep();
+            ///TempData.Save();
+            /// Binding Through View's Dictionary : Transfer Data from Action to View [One Way]
+            /// 1. ViewData
+            ///ViewData["Message"] = "Hello Data";
+            /// 2. ViewBag
+            ///ViewBag.Message = "Hello Bag";
+
+            var Employees = Enumerable.Empty<Employee>();
+            var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
+            if (string.IsNullOrEmpty(searchInput))
+            {
+                Employees = await employeeRepo.GetAllAsync();
+            }
+            else
+            {
+                Employees = await employeeRepo.GetEmployeesByNameAsync(searchInput);
+            }
+
+            var result = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeResponseViewModel>>(Employees);
+
+            return PartialView("EmployeeTablePartialView", result);
+        }
+
         // /Employee/Create
         //[HttpGet]
         public IActionResult Create()

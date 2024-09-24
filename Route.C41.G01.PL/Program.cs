@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -76,11 +77,23 @@ namespace Route.C41.G01.PL
             webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
             webApplicationBuilder.Services.AddTransient<IMailSettings, EmailSettings>();
 
+			webApplicationBuilder.Services.Configure<TwilioSettings>(webApplicationBuilder.Configuration.GetSection("Twilio"));
+            webApplicationBuilder.Services.AddTransient<ISMSService, SMSService>();
 
+            webApplicationBuilder.Services.AddAuthentication(Options =>
+            {
+                Options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                Options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle(Options =>
+            {
+                IConfiguration GoogleAuth = webApplicationBuilder.Configuration.GetSection("Authentication:Google");
+                Options.ClientId = GoogleAuth["ClientId"];
+                Options.ClientSecret = GoogleAuth["ClientSecret"];
+            });
 
-            #endregion
+			#endregion
 
-            var app = webApplicationBuilder.Build();
+			var app = webApplicationBuilder.Build();
 
             #region Configure Kestrel Middlewares
             if (app.Environment.IsDevelopment())

@@ -35,7 +35,7 @@
 <div class="row justify-content-center align-items-center mt-5">
     <form asp-action="Index" class="row col-8 offset-2">
         <div class="col-8">
-            <input type="text" class="form-control" name="searching" id="searching" placeholder="Search By Name" />
+            <input type="text" class="form-control" name="searchInput" id="searchInput" placeholder="Search By Name" />
         </div>
         <div class="col-4">
             <input type="submit" value="Search" class="btn btn-success" />
@@ -107,3 +107,27 @@ else
         <h3>There is No Employees :(</h3>
     </div>
 }
+
+
+<script>
+    const searchBar = $('#searchInput');
+    const table = $('table');
+
+    searchBar.on('keyup', function(event) {
+        var searchValue = searchBar.val();
+
+        $.ajax({
+            url: '/Employee/Search',
+            type: 'Get',
+            data: { searchInput: searchValue },
+            success: function (result) {
+                table.html(result);
+            },
+            error: function (xhr, status, error) {
+                console.log(error)
+            }
+        })
+    })
+
+
+</script>

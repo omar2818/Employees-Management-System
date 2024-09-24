@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Route.C41.G01.DAL.Models;
+using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.Services.EmailSender;
 using Route.C41.G01.PL.ViewModels.User;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Route.C41.G01.PL.Controllers
@@ -15,13 +19,22 @@ namespace Route.C41.G01.PL.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMailSettings _mailSettings;
+		private readonly ISMSService _smsService;
 
-		public AccountController(IEmailSender emailSender, IConfiguration configuration, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		public AccountController(IEmailSender emailSender
+            , IConfiguration configuration
+            , UserManager<ApplicationUser> userManager
+            , SignInManager<ApplicationUser> signInManager
+            , IMailSettings mailSettings
+            , ISMSService sms)
         {
             _emailSender = emailSender;
             _configuration = configuration;
 			_userManager = userManager;
 			_signInManager = signInManager;
+            _mailSettings = mailSettings;
+			_smsService = sms;
 		}
 
         #region Sign Up
@@ -114,9 +127,36 @@ namespace Route.C41.G01.PL.Controllers
 			return View(model);
         }
 
-        #endregion
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
 
-        public async new Task<IActionResult> SignOut()
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var Result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            var claims = Result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                }
+                );
+
+            return RedirectToAction("Index", "Home");
+        }
+
+		#endregion
+
+		public async new Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(SignIn));
@@ -137,21 +177,77 @@ namespace Route.C41.G01.PL.Controllers
                 if (user is not null)
                 {
                     var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, "localhost:5001");
+                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
                     await _emailSender.SendAsync(
                         from: _configuration["EmailSettings:SenderEmail"],
                         recipients: model.Email,
                         subject: "reset your password",
                         body: PasswordURL
                         );
+
                     return Redirect(nameof(CheckYourInbox));
                 }
                 ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
             }
-            return View(model);
+            return View(nameof(ForgetPassword), model);
         }
 
-        public IActionResult CheckYourInbox()
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordEmailUsingMailKit(ForgetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user is not null)
+                {
+                    var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
+                    
+                    var email = new Email()
+                    {
+                        To = model.Email,
+                        Subject = "Reset Your Password",
+                        Body = PasswordURL
+                    };
+
+                    _mailSettings.SendEmail(email);
+
+                    return Redirect(nameof(CheckYourInbox));
+                }
+                ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
+            }
+            return View(nameof(ForgetPassword), model);
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> SendSMS(ForgetPasswordViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var user = await _userManager.FindByEmailAsync(model.Email);
+
+				if (user is not null)
+				{
+					var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+					var PasswordURL = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken }, Request.Scheme);
+
+                    var sms = new SMSMessage()
+                    {
+                        PhoneNumber = user.PhoneNumber,
+                        Body = PasswordURL
+                    };
+
+                    _smsService.SendSMS(sms);
+
+					return Ok("Check Your Phone");
+				}
+				ModelState.AddModelError(string.Empty, "There is No Account With this Email!!");
+			}
+			return View(nameof(ForgetPassword), model);
+		}
+
+		public IActionResult CheckYourInbox()
         {
             return View();
         }

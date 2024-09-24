@@ -16,6 +16,7 @@
 	<!-- main -->
 	<div class="main-w3layouts wrapper">
 		<h1>Creative @ViewData["Tite"] Form</h1>
+			<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		@RenderBody()
 		<!-- copyright -->
 		<div class="colorlibcopy-agile">
@@ -36,5 +37,7 @@
 		</ul>
 	</div>
 	<!-- //main -->
+	@await RenderSectionAsync("ValidationSection", required: false);
+
 </body>
 </html>

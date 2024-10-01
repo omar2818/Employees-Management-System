@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Route.C41.G01.DAL.Data;
 using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.Hepers;
@@ -63,15 +65,6 @@ namespace Route.C41.G01.PL
                 options.AccessDeniedPath = "/Home/Error";
             });
 
-            webApplicationBuilder.Services.AddAuthentication(options =>
-            {
-                //options.DefaultAuthenticateScheme = "Identity.Application";
-            }).AddCookie("Hamda", options =>
-            {
-                options.LoginPath = "/Account/SignIn";
-                options.ExpireTimeSpan = TimeSpan.FromDays(1);
-                options.AccessDeniedPath = "/Home/Error";
-            });
             webApplicationBuilder.Services.AddTransient<Services.EmailSender.IEmailSender, EmailSender>();
 
             webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
@@ -80,10 +73,11 @@ namespace Route.C41.G01.PL
 			webApplicationBuilder.Services.Configure<TwilioSettings>(webApplicationBuilder.Configuration.GetSection("Twilio"));
             webApplicationBuilder.Services.AddTransient<ISMSService, SMSService>();
 
-            webApplicationBuilder.Services.AddAuthentication(Options =>
+            webApplicationBuilder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
-                Options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                Options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.LoginPath = "/Account/SignIn";
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.AccessDeniedPath = "/Home/Error";
             }).AddGoogle(Options =>
             {
                 IConfiguration GoogleAuth = webApplicationBuilder.Configuration.GetSection("Authentication:Google");

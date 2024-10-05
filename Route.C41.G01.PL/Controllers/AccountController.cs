@@ -9,7 +9,9 @@ using Route.C41.G01.DAL.Models;
 using Route.C41.G01.PL.Hepers;
 using Route.C41.G01.PL.Services.EmailSender;
 using Route.C41.G01.PL.ViewModels.User;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Route.C41.G01.PL.Controllers
@@ -140,24 +142,33 @@ namespace Route.C41.G01.PL.Controllers
 
         public async Task<IActionResult> GoogleResponse()
         {
-            var Result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
-            var claims = Result.Principal.Identities.FirstOrDefault().Claims.Select(
-                claim => new
-                {
-                    claim.Issuer,
-                    claim.OriginalIssuer,
-                    claim.Type,
-                    claim.Value
-                }
-                );
+            if (!result.Succeeded) return RedirectToAction("Login");
 
-            return RedirectToAction("Index", "Home");
+            // Retrieve the user's information from Google claims
+            var claims = result.Principal.Identities.FirstOrDefault().Claims
+                .Select(c => new { c.Type, c.Value });
+
+            // Find or create the user in the local database
+            var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                user = new ApplicationUser { UserName = email, Email = email };
+                await _userManager.CreateAsync(user);
+            }
+
+            // Sign in the user
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-		#endregion
+        #endregion
 
-		public async new Task<IActionResult> SignOut()
+        public async new Task<IActionResult> SignOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(SignIn));

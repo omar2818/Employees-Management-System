@@ -65,7 +65,7 @@ namespace Route.C41.G01.PL
                 options.AccessDeniedPath = "/Home/Error";
             });
 
-            webApplicationBuilder.Services.AddTransient<Services.EmailSender.IEmailSender, EmailSender>();
+            webApplicationBuilder.Services.AddTransient<IEmailSender, EmailSender>();
 
             webApplicationBuilder.Services.Configure<MailSettings>(webApplicationBuilder.Configuration.GetSection("MailSettings"));
             webApplicationBuilder.Services.AddTransient<IMailSettings, EmailSettings>();
@@ -73,16 +73,13 @@ namespace Route.C41.G01.PL
 			webApplicationBuilder.Services.Configure<TwilioSettings>(webApplicationBuilder.Configuration.GetSection("Twilio"));
             webApplicationBuilder.Services.AddTransient<ISMSService, SMSService>();
 
-            webApplicationBuilder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-            {
-                options.LoginPath = "/Account/SignIn";
-                options.ExpireTimeSpan = TimeSpan.FromDays(1);
-                options.AccessDeniedPath = "/Home/Error";
-            }).AddGoogle(Options =>
+            webApplicationBuilder.Services.AddAuthentication().AddGoogle(Options =>
             {
                 IConfiguration GoogleAuth = webApplicationBuilder.Configuration.GetSection("Authentication:Google");
                 Options.ClientId = GoogleAuth["ClientId"];
                 Options.ClientSecret = GoogleAuth["ClientSecret"];
+                Options.SignInScheme = IdentityConstants.ExternalScheme;
+                //Options.CallbackPath = "/Account/GoogleResponse";
             });
 
 			#endregion

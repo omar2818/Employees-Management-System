@@ -1,0 +1,15 @@
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\bin\Debug\net8.0\DemoG02.BusinessLogic.deps.json
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\bin\Debug\net8.0\DemoG02.BusinessLogic.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\bin\Debug\net8.0\DemoG02.BusinessLogic.pdb
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\bin\Debug\net8.0\DemoG02.DataAccess.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\bin\Debug\net8.0\DemoG02.DataAccess.pdb
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.csproj.AssemblyReference.cache
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.AssemblyInfoInputs.cache
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.AssemblyInfo.cs
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.csproj.CoreCompileInputs.cache
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02..9F887C66.Up2Date
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\refint\DemoG02.BusinessLogic.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\DemoG02.BusinessLogic.pdb
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.BusinessLogic\obj\Debug\net8.0\ref\DemoG02.BusinessLogic.dll

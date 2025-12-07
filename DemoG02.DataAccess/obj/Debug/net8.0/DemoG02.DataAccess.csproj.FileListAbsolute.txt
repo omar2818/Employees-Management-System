@@ -1,0 +1,12 @@
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\bin\Debug\net8.0\DemoG02.DataAccess.deps.json
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\bin\Debug\net8.0\DemoG02.DataAccess.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\bin\Debug\net8.0\DemoG02.DataAccess.pdb
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.AssemblyInfoInputs.cache
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.AssemblyInfo.cs
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.csproj.CoreCompileInputs.cache
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\refint\DemoG02.DataAccess.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.pdb
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\ref\DemoG02.DataAccess.dll
+D:\Route\C44\07 ASP.Net Core MVC\Session 03\Files\DemoG02 Solution\DemoG02.DataAccess\obj\Debug\net8.0\DemoG02.DataAccess.csproj.AssemblyReference.cache
